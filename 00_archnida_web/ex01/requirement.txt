@@ -1,0 +1,4 @@
+exif==1.6.1
+ExifRead==3.0.0
+pillow==11.1.0
+plum-py==0.8.7

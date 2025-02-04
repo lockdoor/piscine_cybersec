@@ -1,0 +1,21 @@
+FROM debian
+
+RUN apt-get update && apt-get install -y \
+    nginx \
+    apt-transport-https \
+    wget
+
+RUN cat << EOF
+deb     [signed-by=/usr/share/keyrings/deb.torproject.org-keyring.gpg] https://deb.torproject.org/torproject.org $(cat /etc/debian_version) main
+deb-src [signed-by=/usr/share/keyrings/deb.torproject.org-keyring.gpg] https://deb.torproject.org/torproject.org $(cat /etc/debian_version) main
+EOF > /etc/apt/sources.list.d/tor.list
+
+RUN wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/deb.torproject.org-keyring.gpg >/dev/null
+
+RUN apt update && apt install -y tor deb.torproject.org-keyring
+
+COPY torrc /etc/tor/torrc
+
+EXPOSE 80
+
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
