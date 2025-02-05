@@ -1,5 +1,4 @@
 import sys
-# from exif import Image
 import exifread
 
 def scorpians():
@@ -13,14 +12,6 @@ def scorpians():
                 for tag in tags.keys():
                     if tag not in ('JPEGThumbnail', 'TIFFThumbnail', 'Filename', 'EXIF MakerNote'):
                         print(f"{tag}: {tags[tag]}")
-
-                '''
-                img = Image(image_file)
-                if not img.has_exif:
-                    raise Exception("No EXIF information found.")
-                for tag in img.list_all():
-                    print(f"{tag}: {img.get(tag)}")
-                '''
                 print()
 
         except Exception as e:

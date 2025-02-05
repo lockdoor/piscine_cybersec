@@ -2,12 +2,12 @@
 
 Make Virtual Environment
 ```
-python3 -m venv venv
+python3 -m venv .venv
 ```
 
 Enter your Virtual Environment
 ```
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 Install requirement
