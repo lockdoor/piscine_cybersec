@@ -1,39 +1,37 @@
 FROM debian:bookworm-slim
 
-# Install required dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    nginx \
-    apt-transport-https \
-    wget \
-    curl \
-    gnupg \
-    ca-certificates \
-    supervisor && \
-    rm -rf /var/lib/apt/lists/*
+ARG USERNAME=lockdoor
 
-# Add Tor Project repository
-RUN curl -fsSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc -o /usr/share/keyrings/tor-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org bookworm main" | tee /etc/apt/sources.list.d/tor.list
+# Install Tor , Nginx, Openssh and Supervisor
+RUN apt-get update && apt-get install -y tor nginx openssh-server supervisor sudo
 
-# Install Tor and clean up
-RUN apt-get update && apt-get install -y --no-install-recommends tor deb.torproject.org-keyring && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy configuration files
+# Copy the configuration files
 COPY torrc /etc/tor/torrc
+# COPY nginx.conf /etc/nginx/nginx.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+RUN mkdir -p /var/run/sshd && chmod 0755 /var/run/sshd
 
 # Create a non-root user
-# RUN useradd -m -d /var/lib/tor -s /bin/bash tor-user && \
-#     chown -R tor-user:tor-user /var/lib/tor /etc/tor
+RUN useradd -m -s /bin/bash ${USERNAME} && \
+    echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Copy Supervisor configuration
-COPY supervisord.conf /etc/supervisor/supervisord.conf
+# Set up SSH keys for the user
+RUN mkdir -p /home/${USERNAME}/.ssh && \
+    chmod 700 /home/${USERNAME}/.ssh
 
-# Copy static files
-COPY html/index.html /var/www/html/index.nginx-debian.html
+# Copy the public key for authentication (replace with your actual public key)
+COPY id_rsa.pub /home/${USERNAME}/.ssh/authorized_keys
 
-# Expose ports
-EXPOSE 80 9050 9051
+# Set proper permissions
+RUN chmod 600 /home/${USERNAME}/.ssh/authorized_keys && \
+    chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.ssh
 
-# Start services using Supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# Configure SSH to disable root login & password authentication
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config && \
+    echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+
+# Expose the ports
+EXPOSE 22 80
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
