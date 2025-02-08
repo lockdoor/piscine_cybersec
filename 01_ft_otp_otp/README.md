@@ -1,6 +1,8 @@
+# FT_OTP
+
 [RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238)
 
-Hash Message Authtication Code[HMAC](https://en.wikipedia.org/wiki/HMAC)
+Hash Message Authtication Code [HMAC](https://en.wikipedia.org/wiki/HMAC)
 
 [HOTP](https://datatracker.ietf.org/doc/html/rfc4226)
 
@@ -21,5 +23,11 @@ https://www.youtube.com/watch?v=XYVrnZK5MAU
 
 for *.hex can use
 ```
-echo -n $(echo hello |  sha256) > somefile.hex
+echo -n $(echo hello |  sha256) > somefile.txt
 ```
+or
+```
+echo -n hello1 | openssl sha256 -hex | awk '{printf "%s", $2}' > somefile.txt
+```
+
+This project not require third-party library

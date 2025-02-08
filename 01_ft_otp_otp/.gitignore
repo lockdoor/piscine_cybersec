@@ -1,2 +1,5 @@
 __pycache__
 .venv
+ft_otp.key
+*.key
+*.txt
