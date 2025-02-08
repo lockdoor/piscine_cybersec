@@ -73,7 +73,7 @@ HiddenServicePort 80 127.0.0.1:80
 
 #HiddenServiceDir /var/lib/tor/other_hidden_service/
 #HiddenServicePort 80 127.0.0.1:80
-#HiddenServicePort 22 127.0.0.1:22
+HiddenServicePort 4242 127.0.0.1:4242
 
 ################ This section is just for relays #####################
 #
