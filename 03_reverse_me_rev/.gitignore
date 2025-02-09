@@ -1,2 +1,6 @@
 binary
 binary.tgz
+level1/level1
+level2/level2
+a.out
+*.o

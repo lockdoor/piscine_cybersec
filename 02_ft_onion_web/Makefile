@@ -14,5 +14,5 @@ volume:
 
 build:
 	mkdir -p .ssh
-	cp ~/.ssh/id_rsa.pub .ssh
+	cp ~/.ssh/id_rsa.pub id_rsa.pub
 	docker build -t onion .
