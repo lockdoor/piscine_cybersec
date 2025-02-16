@@ -2,6 +2,10 @@ binary
 binary.tgz
 level1/level1
 level2/level2
+level3/level3
 a.out
 *.o
 *.dSYM/
+level1.patch
+level2.patch
+level3.patch
