@@ -1,6 +1,8 @@
 FROM python:3.12.9-alpine3.21
 
-RUN pip install scapy
+RUN apk add --no-cache binutils make
+
+RUN pip install scapy pyinstaller
 
 COPY . /inquisitor
 

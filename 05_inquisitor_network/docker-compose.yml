@@ -1,58 +1,62 @@
 services:
   ftp_server:
-    image: stilliard/pure-ftpd
+    build:
+      context: ./ftp_server
+      dockerfile: Dockerfile
+    image: inquisitor/ftp_server
     container_name: ftp_server
     volumes:
-      - ./ftp:/home/ftpusers
+      - ./inquisitor:/inquisitor
+    working_dir: /inquisitor
     environment:
-      FTP_USER_NAME: "ftpuser"
-      FTP_USER_PASS: "ftppass"
-      FTP_USER_HOME: "/home/ftpusers/ftpuser"
-      FTP_PASSIVE_PORTS: "30000:30009"
-      FTP_UID: "1000"
-      FTP_GID: "1000"
+      FTP_USER: lockdoor
+      FTP_PASS: password
     restart: always
     hostname: ftp_server
-    # networks:
-    #   inquisitor_network:
-    #     ipv4_address: 192.168.0.254
+    networks:
+      inquisitor:
 
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
+    image: inquisitor/client
     container_name: client
-    command: ["sleep", "5000"]
+    volumes:
+      - ./inquisitor:/inquisitor
+    working_dir: /inquisitor
+    command: ["sleep", "infinity"]
     depends_on:
       - ftp_server
     restart: always
     hostname: client
-    # networks:
-    #   inquisitor_network:
-    #     ipv4_address: 192.168.0.253
+    networks:
+      inquisitor:
 
   inquisitor:
     build:
       context: ./inquisitor
       dockerfile: Dockerfile
     container_name: inquisitor
+    image: inquisitor/inquisitor
     volumes:
       - ./inquisitor:/inquisitor
-    command: ["sleep", "5000"]
+    command: ["sleep", "infinity"]
     depends_on:
       - ftp_server
       - client
     restart: always
     hostname: inquisitor
-    # networks:
-    #   inquisitor_network:
-    #     ipv4_address: 192.168.0.252
+    networks:
+      inquisitor:
 
-# networks:
-#   inquisitor_network:
-#     name: inquisitor_network
+networks:
+  inquisitor:
+    name: inquisitor
 #     driver: bridge
 #     ipam:
 #       config:
 #         - subnet: 192.168.0.0/24
+
+
 
