@@ -1,0 +1,43 @@
+services:
+  web:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    image: lockdoor/fastapi
+    container_name: fastapi
+    depends_on:
+      - postgres
+      - mysql
+    restart: always
+    ports:
+      - "8000:8000"
+    # volumes:
+    #   - ./fastapi/src:/app
+    # command: ["fastapi", "dev", "--host=0.0.0.0", "server.py"]
+
+  postgres:
+    image: postgres:13.20-alpine3.20
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fastapi
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fastapi
+      MYSQL_USER: fastapi
+      MYSQL_PASSWORD: fastapi
+
+  vaccine:
+    build: 
+      context: ./vaccine
+      dockerfile: Dockerfile
+    image: lockdoor/vaccine
+    container_name: vaccine
+    volumes:
+      - ./vaccine/src:/app
+    command: ["sleep", "infinity"]

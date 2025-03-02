@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+<body class="container">
+    <nav class="nav">
+        <a class="nav-link" href="/mysql">sqlite</a>
+        <a class="nav-link" href="/postgres">postgres</a>
+        <a class="nav-link" href="/mysql">mysql</a>
+    </nav>
+    <h1>FastAPI</h1>
+    <p>Inject it if you can.</p>
+    <form>
+        <div class = "form-group d-flex gap-2">
+            <input type="text" name="username" id="username" class="form-control" placeholder="Enter user id">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+    <div id="content"></div>
+    <script>
+        // if document is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // get the form element
+            const form = document.querySelector('form');
+            // add event listener to the form
+            form.addEventListener('submit', function(event) {
+                // prevent the default form submission
+                event.preventDefault();
+                // get the input element
+                const input = document.querySelector('input');
+                // get the value of the input element
+                const username = input.value;
+                // make a fetch request to the server method post
+                fetch("", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({username: username})
+                })
+                .then(async (response) => {
+                    data = await response.json()
+                    console.log(data)
+
+                    const content = document.querySelector('#content');
+                    content.innerHTML = '';
+                    for (const d of data){
+                        const p_el = document.createElement('p');
+                        p_el.innerText = `${d.id}: ${d.username}`;
+                        content.appendChild(p_el);
+                    }
+                })
+            });
+        });
+    </script>
+</body>
+</html>
