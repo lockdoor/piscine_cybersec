@@ -8,4 +8,16 @@ COPY . /inquisitor
 
 WORKDIR /inquisitor
 
+# RUN pyinstaller -y inquisitor.py
+
+# RUN pyinstaller -y network_scanner.py
+
+# RUN pyinstaller -y sniffer.py
+
+# RUN cp dist/inquisitor/inquisitor ./
+
+# RUN cp dist/network_scanner/network_scanner ./
+
+# RUN cp dist/sniffer/sniffer ./
+
 CMD ["/bin/sh"]

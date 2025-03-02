@@ -37,16 +37,21 @@ def restore(source_ip: str, source_mac: str, destination_ip: str, destination_ma
     scapy.sendp(ether_frame, count=5, verbose = False)
 
 def sniffer(interface: str, stop_event: any, verbose: str | None) -> None:
-    sniffer = scapy.AsyncSniffer(
-        iface=interface,
-        store=False,
-        prn=lambda packet: process_packet(packet, verbose),
-    )
-    sniffer.start()  # Start sniffing in background
-    print("[+] Sniffer Started.")
-    stop_event.wait()  # Blocks until stop_event is set
-    sniffer.stop()  # Stop sniffing when event is triggered
-    print("[-] Sniffer Stopped.")
+    try:
+        sniffer = scapy.AsyncSniffer(
+            iface=interface,
+            store=False,
+            prn=lambda packet: process_packet(packet, verbose),
+        )
+        sniffer.start()  # Start sniffing in background
+        print("[+] Sniffer Started.")
+        stop_event.wait()  # Blocks until stop_event is set
+        sniffer.stop()  # Stop sniffing when event is triggered
+        # print("[-] Sniffer Stopped.")
+    except Exception:
+        sniffer.stop()
+    finally:
+        print("[-] Sniffer Stopped.")
 
 def process_packet(packet, verbose):
     if packet.haslayer(TCP) and (packet[TCP].sport == 21 or packet[TCP].dport == 21) and packet.haslayer(Raw):

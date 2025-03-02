@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import scapy.all as scapy
 from scapy.all import TCP, Raw
 import argparse

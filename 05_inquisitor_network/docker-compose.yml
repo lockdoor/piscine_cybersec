@@ -12,7 +12,7 @@ services:
       FTP_USER: lockdoor
       FTP_PASS: password
     restart: always
-    hostname: ftp_server
+    hostname: inquisitor
     networks:
       inquisitor:
 
@@ -26,8 +26,6 @@ services:
       - ./inquisitor:/inquisitor
     working_dir: /inquisitor
     command: ["sleep", "infinity"]
-    depends_on:
-      - ftp_server
     restart: always
     hostname: client
     networks:
@@ -42,9 +40,6 @@ services:
     volumes:
       - ./inquisitor:/inquisitor
     command: ["sleep", "infinity"]
-    depends_on:
-      - ftp_server
-      - client
     restart: always
     hostname: inquisitor
     networks:
